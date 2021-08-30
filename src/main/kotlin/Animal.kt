@@ -44,6 +44,11 @@ open class Animal(
   }
 
   // ------------------------------------------------------------------------------------------------------------------
+  fun directionsLost(): Array<Int> {
+    return Field.directionsLost(currentDirection)
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
   fun canMove(direction: Int): Boolean {
     if (direction == STAY) {
       return true

@@ -2,7 +2,7 @@ import Field.Companion.FOX
 import Field.Companion.RABBIT
 import Field.Companion.STAY
 import Field.Companion.directionsCW
-import Field.Companion.directionsForward
+import Field.Companion.directionsLost
 import U.Companion.should_never_happen
 
 class Fox(
@@ -46,10 +46,8 @@ class Fox(
     }
 
     // Can we keep going in the current direction?
-    var possibleDirection: Int = currentDirection
-    val df = directionsForward()
-    for (d in df) {
-      possibleDirection = d
+    val df = directionsLost()
+    for (possibleDirection in df) {
       if (canMove(possibleDirection)) {
         return setCurrDirection(possibleDirection)
       }

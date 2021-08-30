@@ -20,10 +20,13 @@ class Field(
   var rabbit: Rabbit = Rabbit(this)
   var fox: Fox = Fox(this)
 
+  var rabbitIsAlive: Boolean = true
+  var rabbitWins: Boolean = false
+
   val maxDim = max(width, height)
 
-  private var stepNum: Int = 0
-  private var seed: Long = randomNumberGenerator.nextLong()
+  var stepNum: Int = 0
+  var seed: Long = randomNumberGenerator.nextLong()
 
   private val field = Array(height) { row ->
     Array(width) { col ->
@@ -48,6 +51,101 @@ class Field(
   }
 
   // ------------------------------------------------------------------------------------------------------------------
+  private fun populate(): Unit {
+
+    // initialize
+    for (x in 0 until width) {
+      for (y in 0 until height) {
+        putAt(x, y, Empty(this, x, y))
+      }
+    }
+
+    // rabbit
+    putAt(random(width), random(height), rabbit)
+
+    // fox
+    var distance: Int
+    var foxX: Int
+    var foxY: Int
+    do {
+      foxX = random(width)
+      foxY = random(height)
+      distance = abs(foxY - rabbit.location.x).coerceAtLeast(abs(foxX - rabbit.location.y))
+    } while (distance >= ((height + width) / 4))
+    putAt(foxX, foxY, fox)
+
+    // bushes
+    var numBushesToPlace = (width * height) / 20
+    while (numBushesToPlace > 0) {
+      val bushX = random(width)
+      val bushY = random(height)
+      if (at(bushX, bushY)!!.type == EMPTY) {
+        putAt(bushX, bushY, Bush(this, bushX, bushY))
+        numBushesToPlace -= 1
+      }
+    }
+
+    println(fieldString("populate"))
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
+  public fun runIt(
+    numSteps: Int = C.NUM_STEPS
+  ) {
+
+    for (n in IntRange(0, numSteps)) {
+      stepNum = n
+      if (!stepRabbit()) {
+        break;
+      }
+
+      if (!stepEnemies()) {
+        break;
+      }
+    }
+
+    // Who won?
+    if (rabbitIsAlive) {
+      rabbitWins = true
+    }
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
+  private fun stepRabbit(): Boolean {
+    // TODO: Force rabbit to have location that is stored in Field, not their own Location - no cheating
+
+    val dir = rabbit.decideMove()
+
+    // TODO: See if rabbit committed suicide
+
+    return true;  // true === should continue
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
+  private fun stepEnemies(): Boolean {
+    // TODO: Force fox to have location that is stored in Field, not their own Location - no cheating
+
+    val dir = fox.decideMove()
+    val newX = fox.location.x + dx_(dir)
+    val newY = fox.location.y + dy_(dir)
+
+    // Is this the rabbits location? (Did the enemy win?)
+    if (newX == rabbit.location.x && newY == rabbit.location.y) {
+      rabbitIsAlive = false
+      return false
+    }
+
+    moveTo(newX, newY, fox)
+
+
+    // TODO: See if game is over
+
+    return true;  // true === should continue
+  }
+
+
+
+  // ------------------------------------------------------------------------------------------------------------------
   fun getObjectInDirection(location: Location, n: Int):Int {
     val dx = dx_(n)
     val dy = dy_(n)
@@ -59,7 +157,10 @@ class Field(
       x += dx
       y += dy
 
-      if (!isLegal(x, y))               { return EDGE }
+      if (!isLegal(x, y)) {
+        return EDGE
+      }
+
       val fieldable = at(x,y)
       if (fieldable != null) {
         if (isSomething(fieldable)) {
@@ -104,16 +205,9 @@ class Field(
 
   // ------------------------------------------------------------------------------------------------------------------
   fun isSomething(x:Int, y:Int): Boolean {
-    val fieldable = at(x,y) ?: return false
+    val fieldable = at(x,y) ?: return true
 
     return isSomething(fieldable)
-//    return when (fieldable.type) {
-//      RABBIT -> true
-//      ENEMY -> true
-//      BUSH -> true
-//
-//      else -> false
-//    }
   }
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -130,61 +224,6 @@ class Field(
   }
 
   // ------------------------------------------------------------------------------------------------------------------
-  public fun runIt(
-    numSteps: Int = C.NUM_STEPS
-  ) {
-
-    for (n in IntRange(0, numSteps)) {
-      stepNum = n
-      if (!stepRabbit()) {
-        break;
-      }
-
-      if (!stepEnemies()) {
-        break;
-      }
-    }
-  }
-
-  // ------------------------------------------------------------------------------------------------------------------
-  private fun populate(): Unit {
-
-    // initialize
-    for (x in 0 until width) {
-      for (y in 0 until height) {
-        putAt(x, y, Empty(this, x, y))
-      }
-    }
-
-    // rabbit
-    putAt(random(width), random(height), rabbit)
-
-    // fox
-    var distance: Int
-    var foxX: Int
-    var foxY: Int
-    do {
-      foxX = random(width)
-      foxY = random(height)
-      distance = abs(foxY - rabbit.location.x).coerceAtLeast(abs(foxX - rabbit.location.y))
-    } while (distance >= ((height + width) / 4))
-    putAt(foxX, foxY, fox)
-
-    // bushes
-    var numBushesToPlace = (width * height) / 20
-    while (numBushesToPlace > 0) {
-      val bushX = random(width)
-      val bushY = random(height)
-      if (at(bushX, bushY)!!.type == EMPTY) {
-        putAt(bushX, bushY, Bush(this, bushX, bushY))
-        numBushesToPlace -= 1
-      }
-    }
-
-    println(fieldString("populate"))
-  }
-
-  // ------------------------------------------------------------------------------------------------------------------
   private fun at(x:Int, y:Int): Fieldable? {
     if (x < 0 || y < 0) {
       return null
@@ -198,10 +237,8 @@ class Field(
 
   // ------------------------------------------------------------------------------------------------------------------
   private fun putAt(x: Int, y: Int, f:Fieldable): Fieldable {
-//    val origLocation = f.location
     f.location = Location(x, y)
     field[y][x] = f
-//    field[origLocation.y][origLocation.x] = Empty(this, origLocation.x, origLocation.y)
     return at(x, y)!!
   }
 
@@ -236,35 +273,6 @@ class Field(
     result += "\n"
 
     return result
-  }
-
-  // ------------------------------------------------------------------------------------------------------------------
-  private fun stepRabbit(): Boolean {
-    // TODO: Force rabbit to have location that is stored in Field, not their own Location - no cheating
-
-    val dir = rabbit.decideMove()
-
-    // TODO: See if rabbit committed suicide
-
-    return true;  // true === should continue
-  }
-
-  // ------------------------------------------------------------------------------------------------------------------
-  private fun stepEnemies(): Boolean {
-    // TODO: Force fox to have location that is stored in Field, not their own Location - no cheating
-
-    val dir = fox.decideMove()
-    val newX = fox.location.x + dx_(dir)
-    val newY = fox.location.y + dy_(dir)
-
-    moveTo(newX, newY, fox)
-
-
-    // TODO: See if rabbit is dead
-
-    // TODO: See if game is over
-
-    return true;  // true === should continue
   }
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -333,6 +341,12 @@ class Field(
     // ----------------------------------------------------------------------------------------------------------------
     fun directionsForward(currDir: Int): Array<Int> {
       val clockwise = arrayOf(0,1,7,2,6,3,5,4)
+      return directions(currDir, clockwise)
+    }
+
+    // ----------------------------------------------------------------------------------------------------------------
+    fun directionsLost(currDir: Int): Array<Int> {
+      val clockwise = arrayOf(0,2,4,6,1,3,5,7)
       return directions(currDir, clockwise)
     }
 
