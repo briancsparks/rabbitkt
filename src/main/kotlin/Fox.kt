@@ -18,7 +18,7 @@ class Fox(
 
   override fun decideMove(): Int {
 
-    println(field.fieldString("decide-which-way (${currentDirection})"))
+//    println(field.fieldString("decide-which-way (${currentDirection})"))
 
     // Look around for rabbit
     val lookDirs = directionsCW(currentDirection)

@@ -25,6 +25,7 @@ class U {
     fun check_input_is_bad(cond: Boolean, msg: String): Boolean {
       return should_never_happen(cond, msg)
     }
+
   }
 }
 
