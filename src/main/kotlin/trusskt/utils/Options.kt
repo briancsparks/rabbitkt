@@ -1,4 +1,4 @@
-package TrussKt.utils
+package trusskt.utils
 
 class Options {
 

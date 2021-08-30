@@ -1,9 +1,9 @@
-package TrussKt
+package trusskt
 
-import TrussKt.kind.LogAttr
-import TrussKt.kind.LogItem
-import TrussKt.trusses.MainTruss
-import TrussKt.utils.Options
+import trusskt.kind.LogAttr
+import trusskt.kind.LogItem
+import trusskt.trusses.MainTruss
+import trusskt.utils.Options
 
 open class Truss(
   val moduleName: String,

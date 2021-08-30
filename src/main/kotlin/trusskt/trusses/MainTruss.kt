@@ -1,6 +1,6 @@
-package TrussKt.trusses
+package trusskt.trusses
 
-import TrussKt.Truss
+import trusskt.Truss
 
 class MainTruss(
   appId: String,

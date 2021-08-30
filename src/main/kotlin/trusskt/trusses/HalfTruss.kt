@@ -1,14 +1,14 @@
-package TrussKt.trusses
+package trusskt.trusses
 
-import TrussKt.Truss
-import TrussKt.kind.LogAttr
-import TrussKt.kind.LogItem
-import TrussKt.utils.Constants.Companion.DEBUG
-import TrussKt.utils.Constants.Companion.DEFAULT_RATE_LIMIT
-import TrussKt.utils.Constants.Companion.ERROR
-import TrussKt.utils.Constants.Companion.INFO
-import TrussKt.utils.Constants.Companion.VERBOSE
-import TrussKt.utils.Constants.Companion.WARN
+import trusskt.Truss
+import trusskt.kind.LogAttr
+import trusskt.kind.LogItem
+import trusskt.utils.Constants.Companion.DEBUG
+import trusskt.utils.Constants.Companion.DEFAULT_RATE_LIMIT
+import trusskt.utils.Constants.Companion.ERROR
+import trusskt.utils.Constants.Companion.INFO
+import trusskt.utils.Constants.Companion.VERBOSE
+import trusskt.utils.Constants.Companion.WARN
 
 class HalfTruss(
   moduleName: String,

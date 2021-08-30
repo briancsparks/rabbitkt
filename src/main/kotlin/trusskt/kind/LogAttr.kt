@@ -1,8 +1,8 @@
-package TrussKt.kind
+package trusskt.kind
 
-import TrussKt.Truss
-import TrussKt.utils.Constants.Companion.SEND_ALL
-import TrussKt.utils.U
+import trusskt.Truss
+import trusskt.utils.Constants.Companion.SEND_ALL
+import trusskt.utils.U
 import org.json.JSONException
 import org.json.JSONObject
 

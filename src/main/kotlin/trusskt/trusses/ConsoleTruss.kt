@@ -1,8 +1,8 @@
-package TrussKt.trusses
+package trusskt.trusses
 
-import TrussKt.Truss
-import TrussKt.kind.LogAttr
-import TrussKt.kind.LogItem
+import trusskt.Truss
+import trusskt.kind.LogAttr
+import trusskt.kind.LogItem
 
 class ConsoleTruss(
   private val sourceTruss: Truss
