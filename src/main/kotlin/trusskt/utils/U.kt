@@ -2,6 +2,9 @@ package trusskt.utils
 
 import org.json.JSONException
 import org.json.JSONObject
+import java.io.File
+import java.io.FileInputStream
+import java.nio.file.Paths
 import java.util.*
 import java.util.regex.Pattern
 
@@ -9,10 +12,32 @@ class U {
   companion object {
 
     var isDebug = true
+    lateinit var trussProperties: Properties
 
     // ------------------------------------------------------------------------------------------------------------------
     fun setIsDebug(isDebuggable: Boolean) {
       isDebug = isDebuggable
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------
+    fun getProps(): Properties {
+
+      if (!::trussProperties.isInitialized) {
+        trussProperties = Properties()
+        val homeDir = System.getProperty("user.home")
+        val propertiesFilename = Paths.get(homeDir, ".truss", "truss.properties")
+        val file = File(propertiesFilename.toUri())
+        FileInputStream(file).use { trussProperties.load(it) }
+      }
+
+      return trussProperties
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------
+    @Suppress("UNCHECKED_CAST")
+    fun <T> getTrussProperty(key: String): T {
+      getProps()
+      return trussProperties.getProperty(key) as T
     }
 
     // ------------------------------------------------------------------------------------------------------------------
@@ -103,6 +128,17 @@ class U {
     fun showException(e: Exception) {
       // BBB BP for exceptions
       e.printStackTrace()
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------
+    fun jsonObject(): JSONObject? {
+      try {
+        return JSONObject()
+      } catch (ex: Exception) {
+        ex.printStackTrace()
+      }
+
+      return null
     }
 
     // ------------------------------------------------------------------------------------------------------------------

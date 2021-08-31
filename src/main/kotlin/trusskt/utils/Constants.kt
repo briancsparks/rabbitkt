@@ -21,6 +21,7 @@ class Constants {
 
     const val SEND_ALL = false
     const val LOG_ALL_SENDS = false
+    const val VERBOSE_KAFKA = false
 
     // Level
     const val VERBOSE = 2

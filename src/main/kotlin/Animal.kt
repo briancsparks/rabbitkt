@@ -8,7 +8,8 @@ open class Animal(
   type:Int,
   x:Int = 0,
   y:Int = 0,
-): Fieldable(field,type,x,y) {
+  id:Int,
+): Fieldable(field,type,x,y,id) {
 
   protected var currentDirection: Int = 0
 
@@ -68,4 +69,9 @@ open class Animal(
     }
   }
 
+
+  // ------------------------------------------------------------------------------------------------------------------
+  override fun typename(): String {
+    return "Animal"
+  }
 }

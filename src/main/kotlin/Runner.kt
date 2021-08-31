@@ -1,6 +1,6 @@
 
 fun main() {
-  val field = Field()
+  val field = Field(0)
   field.runIt()
 
   if (field.rabbitWins) {

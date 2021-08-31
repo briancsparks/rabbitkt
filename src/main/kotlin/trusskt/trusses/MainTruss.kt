@@ -4,10 +4,10 @@ import trusskt.Truss
 
 class MainTruss(
   appId: String,
-  moduleName: String,
+//  moduleName: String,
   val sessionId: String?,
 
-): Truss(moduleName) {
+): Truss("MainTruss") {
 
   init {
     Truss.mainTruss           = this

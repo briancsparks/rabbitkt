@@ -7,18 +7,22 @@ import Field.Companion.FOX
 import Field.Companion.RABBIT
 import U.Companion.check_input_is_bad
 import U.Companion.not_possible
+import trusskt.trusses.HalfTruss
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.max
 
 // ====================================================================================================================
 class Field(
+  val id: Int,
   private val width: Int = FIELD_WIDTH,
   private val height: Int = FIELD_HEIGHT,
 ) {
 
-  var rabbit: Rabbit = Rabbit(this)
-  var fox: Fox = Fox(this)
+  val tr = HalfTruss("Field")
+
+  var rabbit: Rabbit = Rabbit(this, 0)
+  var fox: Fox = Fox(this, 0)
 
   var rabbitIsAlive: Boolean = true
   var rabbitWins: Boolean = false
@@ -30,7 +34,7 @@ class Field(
 
   private val field = Array(height) { row ->
     Array(width) { col ->
-      Fieldable(this, -1, col, row)
+      Fieldable(this, -1, col, row, 0)
     }
   }
 
@@ -47,6 +51,8 @@ class Field(
     }
 
     randomNumberGenerator.setSeed(seed)
+
+    tr.ent("field", id).xext(width).yext(height).attr("seed", seed).partition()
     populate()
   }
 
@@ -80,12 +86,12 @@ class Field(
       val bushX = random(width)
       val bushY = random(height)
       if (at(bushX, bushY)!!.type == EMPTY) {
-        putAt(bushX, bushY, Bush(this, bushX, bushY))
+        putAt(bushX, bushY, Bush(this, bushX, bushY, numBushesToPlace))
         numBushesToPlace -= 1
       }
     }
 
-//    println(fieldString("populate"))
+    printField("populate")
   }
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -95,6 +101,8 @@ class Field(
 
     for (n in IntRange(0, numSteps)) {
       stepNum = n
+      tr.ent("step", n).partition()
+
       if (!stepRabbit()) {
         break;
       }
@@ -112,26 +120,39 @@ class Field(
 
   // ------------------------------------------------------------------------------------------------------------------
   private fun stepRabbit(): Boolean {
+    tr.ent(rabbit.typename(), rabbit.id).x(rabbit.location.x).y(rabbit.location.y).end()
+
     // TODO: Force rabbit to have location that is stored in Field, not their own Location - no cheating
 
     val dir = rabbit.decideMove()
+    val newX = rabbit.location.x + dx_(dir)
+    val newY = rabbit.location.y + dy_(dir)
+
+    tr.ent(rabbit.typename(), rabbit.id).x2(newX).y2(newY).attr("direction", dir).end()
 
     // TODO: See if rabbit committed suicide
+
+    moveTo(newX, newY, rabbit)
 
     return true;  // true === should continue
   }
 
   // ------------------------------------------------------------------------------------------------------------------
   private fun stepEnemies(): Boolean {
+    tr.ent(fox.typename(), fox.id).x(fox.location.x).y(fox.location.y).end()
+
     // TODO: Force fox to have location that is stored in Field, not their own Location - no cheating
 
     val dir = fox.decideMove()
     val newX = fox.location.x + dx_(dir)
     val newY = fox.location.y + dy_(dir)
 
+    tr.ent(fox.typename(), fox.id).x2(newX).y2(newY).attr("direction", dir).end()
+
     // Is this the rabbits location? (Did the enemy win?)
     if (newX == rabbit.location.x && newY == rabbit.location.y) {
       rabbitIsAlive = false
+      tr.event().log("rabbitIsAlive", rabbitIsAlive).end()
       return false
     }
 
@@ -239,16 +260,32 @@ class Field(
   private fun putAt(x: Int, y: Int, f:Fieldable): Fieldable {
     f.location = Location(x, y)
     field[y][x] = f
+
+    if (f.type != EMPTY) {
+      tr.ent(f.typename(), f.id).x(x).y(y).end()
+    }
+
     return at(x, y)!!
   }
 
   // ------------------------------------------------------------------------------------------------------------------
   private fun moveTo(x: Int, y: Int, f:Fieldable): Fieldable {
+
+    // If did not move, return
+    if (f.location.x == x && f.location.y == y) {
+      return f
+    }
+
     val origLocation = f.location
     f.location = Location(x, y)
     field[y][x] = f
     field[origLocation.y][origLocation.x] = Empty(this, origLocation.x, origLocation.y)
     return at(x, y)!!
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
+  fun printField(msg: String) {
+//    println(fieldString(msg))
   }
 
   // ------------------------------------------------------------------------------------------------------------------
@@ -399,6 +436,7 @@ open class Fieldable(
   val type: Int,
   var x:Int,
   var y:Int,
+  val id:Int,
 ) {
   var location: Location = Location(x,y)
 
@@ -428,6 +466,11 @@ open class Fieldable(
   }
 
   // ------------------------------------------------------------------------------------------------------------------
+  open fun typename(): String {
+    return "Fieldable"
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
   override fun toString(): String {
     return when(type) {
       EMPTY -> " "
@@ -446,7 +489,13 @@ class Empty(
   field: Field,
   x:Int = 0,
   y:Int = 0,
-): Fieldable(field, EMPTY, x,y) {
+  id:Int = 0,
+): Fieldable(field, EMPTY, x,y, id) {
+
+  // ------------------------------------------------------------------------------------------------------------------
+  override fun typename(): String {
+    return "Empty"
+  }
 }
 
 // ====================================================================================================================
@@ -454,6 +503,12 @@ class Bush(
   field: Field,
   x:Int = 0,
   y:Int = 0,
-): Fieldable(field, BUSH, x,y) {
+  id:Int,
+): Fieldable(field, BUSH, x,y, id) {
+
+  // ------------------------------------------------------------------------------------------------------------------
+  override fun typename(): String {
+    return "Bush"
+  }
 }
 

@@ -14,6 +14,7 @@ repositories {
   jcenter()
   mavenCentral()
   maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+  maven("https://packages.confluent.io/maven/")
 }
 
 dependencies {
@@ -22,6 +23,18 @@ dependencies {
 
   // https://mvnrepository.com/artifact/org.json/json
   implementation("org.json:json:20180813")
+
+  // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
+  implementation("org.apache.kafka:kafka-clients:2.8.0")
+
+  // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams
+  implementation("org.apache.kafka:kafka-streams:2.8.0")
+
+  // https://mvnrepository.com/artifact/org.apache.kafka/connect-runtime
+  implementation("org.apache.kafka:connect-runtime:2.8.0")
+
+  // https://mvnrepository.com/artifact/io.confluent/kafka-json-serializer
+  implementation("io.confluent:kafka-json-serializer:6.2.0")
 }
 
 tasks.test {

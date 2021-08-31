@@ -7,9 +7,10 @@ import U.Companion.should_never_happen
 
 class Fox(
   field: Field,
+  id:Int,
   x:Int = 0,
   y:Int = 0,
-): Animal(field, FOX, x, y) {
+): Animal(field, FOX, x, y, id) {
 
 //  private var currentDirection: Int = Field.random(8)
   private var distanceToRabbit = 0
@@ -18,7 +19,7 @@ class Fox(
 
   override fun decideMove(): Int {
 
-//    println(field.fieldString("decide-which-way (${currentDirection})"))
+    field.printField("decide-which-way (${currentDirection})")
 
     // Look around for rabbit
     val lookDirs = directionsCW(currentDirection)
@@ -54,6 +55,11 @@ class Fox(
     }
 
     return STAY;
+  }
+
+  // ------------------------------------------------------------------------------------------------------------------
+  override fun typename(): String {
+    return "Fox"
   }
 
 }
