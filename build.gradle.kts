@@ -21,8 +21,30 @@ dependencies {
   testImplementation(kotlin("test"))
   implementation(compose.desktop.currentOs)
 
+  // ---------------------------------------------------------------------- JSON ----------
+
   // https://mvnrepository.com/artifact/org.json/json
   implementation("org.json:json:20180813")
+
+  // ---------------------------------------------------------------------- okHTTP ----------
+
+  // https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+  implementation("com.squareup.okhttp3:okhttp:4.9.1")
+
+//  // https://mvnrepository.com/artifact/com.squareup.okhttp3/logging-interceptor
+//  implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+
+  // ---------------------------------------------------------------------- AWS ----------
+  implementation(platform("software.amazon.awssdk:bom:2.15.0"))
+  implementation("software.amazon.awssdk:s3")
+
+//  // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
+//  implementation("com.amazonaws:aws-java-sdk:1.12.62")
+
+//  // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+//  implementation("com.amazonaws:aws-java-sdk-s3:1.12.62")
+
+  // ---------------------------------------------------------------------- Kafka ----------
 
   // https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients
   implementation("org.apache.kafka:kafka-clients:2.8.0")
