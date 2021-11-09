@@ -14,10 +14,12 @@ class Aws {
       val bucket = "cdr0-net-ingest"
       val key = "ingest/testthis/a.json"
 
+      println("Putting to S3 ${bucket}/${key} (${bodyStr.length} bytes)")
       val resp = s3.putObject(
         PutObjectRequest.builder().bucket(bucket).key(key).build(),
         RequestBody.fromString(bodyStr)
       )
+      println("Done putting to S3 ${bucket}/${key} (${bodyStr.length} bytes) eTag: ${resp.eTag()}")
 
       val tag = resp.eTag()
     }

@@ -15,11 +15,15 @@ repositories {
   mavenCentral()
   maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
   maven("https://packages.confluent.io/maven/")
+  maven("https://jitpack.io/")
 }
 
 dependencies {
   testImplementation(kotlin("test"))
   implementation(compose.desktop.currentOs)
+
+  implementation("com.github.briancsparks:trusskt:v1.0.3")
+
 
   // ---------------------------------------------------------------------- JSON ----------
 

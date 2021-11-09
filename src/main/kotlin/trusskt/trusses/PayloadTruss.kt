@@ -48,14 +48,6 @@ class PayloadTruss(
     return false
   }
 
-//  // ------------------------------------------------------------------------------------------------------------------
-//  fun finishUp() {
-//    CoroutineScope(Dispatchers.Default).launch {
-//      payloadJob.join()
-//      val i = 10
-//    }
-//  }
-
   // ------------------------------------------------------------------------------------------------------------------
   override fun addLogItem(item: LogItem) {
     if (!sendsOnly) {

@@ -21,6 +21,7 @@ class AddAttrToPayload(val attrItem: LogAttr): PayloadMsg()
 class GetPayloadState(val deferred: CompletableDeferred<PayloadState>): PayloadMsg()
 class MaybeFlush(val flushedResponse: CompletableDeferred<Boolean>, val state: CompletableDeferred<PayloadState>): PayloadMsg()
 
+
 fun CoroutineScope.payloadActor(
   initialState: PayloadState,
 ) = actor<PayloadMsg> {
@@ -58,11 +59,8 @@ class PayloadStateStore(
 
   private val state = scope.payloadActor(initialState)
 
-  // TODO: Should be suspend?
   suspend fun dispatch(msg: PayloadMsg) {
-//    scope.launch {
-      state.send(msg)
-//    }
+    state.send(msg)
   }
 
   suspend fun getState(): PayloadState {

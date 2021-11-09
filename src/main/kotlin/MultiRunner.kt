@@ -2,17 +2,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import trusskt.trusses.*
+import net.cdr0.trusskt.trusses.ConsoleTruss
+import net.cdr0.trusskt.trusses.HalfTruss
+import net.cdr0.trusskt.trusses.MainTruss
+
+//import trusskt.trusses.*
 
 fun main() = runBlocking<Unit> {
 
-  val payloadJob = Job()
-  val payloadScope = CoroutineScope(Dispatchers.Default + payloadJob)
+//  val payloadJob = Job()
+//  val payloadScope = CoroutineScope(Dispatchers.Default + payloadJob)
 
   val mainTruss = MainTruss("Rabbit::MultiRunner", "")
   val consoleTruss = ConsoleTruss(mainTruss)
 //  val kafkaTruss = KafkaTruss("rabbitfox2", mainTruss)
-  val payloadTruss = PayloadTruss(mainTruss, payloadScope)
+//  val payloadTruss = PayloadTruss(mainTruss, payloadScope)
   val tr = HalfTruss("MultiRunner::main")
 
 
@@ -31,11 +35,9 @@ fun main() = runBlocking<Unit> {
 
   }
 
-  payloadJob.join()
+//  payloadJob.join()
 
   println("Rabbit wins ${numRabbitWins} / ${numRuns} == ${(numRabbitWins.toDouble() / numRuns.toDouble()) * 100.0}%")
-
-//  payloadTruss.finishUp()
 
 }
 
